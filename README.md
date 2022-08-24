@@ -208,6 +208,8 @@ join페이지에서 입력받은 값들을 DB로 옮겨 실행시키기 위한 �
 </script>
 ```
 JS로 checkValue라는 function을 만듬. 
+checkValue 는 빈칸이 있을 경우 빈칸에 값을 바로 입력할 수 있게 해줌.
+또한 value가 비어있다면 alert창을 띄워줍니다.
 
 
 ```jsp
@@ -257,6 +259,47 @@ JS로 checkValue라는 function을 만듬.
  ```
  
  table을 만들고, type이 text인 input을 만듬. (name이 data.XXX.focus랑 같아야함.)
+ 
+ # join_p.jsp
+ 
+ ```jsp
+ <%@ page import = "DB.DBConnect" %>
+<%@ page import = "java.sql.*" %>
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+    
+    <%
+    	request.setCharacterEncoding("UTF-8");
+    	String sql = "insert into member_tbl_02 values (?, ?, ?, ?, ?, ?,?)";
+    	
+    	Connection conn = DBConnect.getConnection();
+    	PreparedStatement pstmt = conn.prepareStatement(sql);
+    	
+    	pstmt.setInt(1, Integer.parseInt(request.getParameter("custno")));
+    	pstmt.setString(2, request.getParameter("custname"));
+    	pstmt.setString(3, request.getParameter("phone"));
+    	pstmt.setString(4, request.getParameter("address"));
+    	pstmt.setString(5, request.getParameter("joindate"));
+    	pstmt.setString(6, request.getParameter("grade"));
+    	pstmt.setString(7, request.getParameter("city"));
+    	
+    	pstmt.executeUpdate();
+    	
+    %>
+    
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<body>
+	<jsp:forward page="index.jsp"></jsp:forward>
+</body>
+</head>
+</html>
+```
+
+custno는 DB에 create할 때 number로 지정했지만, join페이지에서 받았던 값은 string이다. 그래서 Int형으로 변환시켜 값을 넣어준다.\
+나머지는 varchar2, char, date이기때문에 따로 변환시켜줄 필요는 없다.
  
  
 
