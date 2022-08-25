@@ -301,6 +301,79 @@ checkValue 는 빈칸이 있을 경우 빈칸에 값을 바로 입력할 수 있
 custno는 DB에 create할 때 number로 지정했지만, join페이지에서 받았던 값은 string이다. 그래서 Int형으로 변환시켜 값을 넣어준다.\
 나머지는 varchar2, char, date이기때문에 따로 변환시켜줄 필요는 없다.
  
- 
+# member_list.jsp
 
+```jsp
+<%@ page import="DB.DBConnect"%>
+<%@ page import="java.sql.*"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+    
+<%
+	String sql="select custno, custname, phone, address, " // custno, custname, phone, address를 조회한다.
+	          +"to_char(joindate,'yyyy-mm-dd') joindate, " // date형인 joindate를 char 형태로 변환하여 조회
+			  +"case when grade = 'A' then 'VIP' when grade = 'B' then '일반' else '직원' end grade, " // 등급을 case문으로 조회하여 각각 맞는 등급으로 분류
+			  +"city from member_tbl_02 order by custno asc"; // city를 custno(오름차순)순서대로 정렬
+
+	Connection conn = DBConnect.getConnection();
+	PreparedStatement pstmt = conn.prepareStatement(sql);
+	ResultSet rs = pstmt.executeQuery(); //rs에는 쿼리문이 들어감.
+%>    
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>member_list</title>
+<link rel="stylesheet" type="text/css" href="css/style.css">
+</head>
+<body>
+<header>
+	  <jsp:include page="layout/header.jsp"></jsp:include>
+ </header>
+
+ <nav>
+   	 <jsp:include page="layout/nav.jsp"></jsp:include>
+ </nav>
+		
+ <section class="section">
+   	 <h2>홈쇼핑 회원 명단</h2><br>
+  
+	<table class="table_line">
+				<tr>  //테이블의 속성만 작성
+					<th>회원번호</th>
+					<th>회원성명</th>
+					<th>전화번호</th>
+					<th>주소</th>
+					<th>가입일자</th>
+					<th>고객등급</th>
+					<th>거주지역</th>
+					
+				</tr>
+				<%
+					while(rs.next()) { //이후 while문을 돌려서 마지막 값이 나올때까지 반복(마지막 회원번호)
+				%>
+				<tr class="center">
+					<td><%= rs.getString("custno")%></td> // 테이블에는 number로 들어가있지만 입력된 값에서 뽑아오므로 string으로 가져옴.
+					<td><%= rs.getString("custname") %></td>
+					<td><%= rs.getString("phone") %></td>
+					<td><%= rs.getString("address") %></td>
+					<td><%= rs.getString("joindate") %></td>
+					<td><%= rs.getString("grade") %></td>
+					<td><%= rs.getString("city") %></td>
+					<td>
+						
+						<input type="button" value="수정" > //수정과 삭제 버튼만 만들어놓는다.
+						<input type="button" value="삭제" ></td>
+				</tr>
+				<%
+					}
+				%>
+			</table>	
+</section>
+<footer id="footer">
+HRDKOREA Copyrightⓒ2015 All rights reserved. Human Resources Development Service of Korea
+</footer>
+</body>
+</html>
+```
 
