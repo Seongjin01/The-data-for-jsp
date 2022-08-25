@@ -304,40 +304,17 @@ custno는 DB에 create할 때 number로 지정했지만, join페이지에서 받
 # member_list.jsp
 
 ```jsp
-<%@ page import="DB.DBConnect"%>
-<%@ page import="java.sql.*"%>
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
-    
-<%
 	String sql="select custno, custname, phone, address, " // custno, custname, phone, address를 조회한다.
-	          +"to_char(joindate,'yyyy-mm-dd') joindate, " // date형인 joindate를 char 형태로 변환하여 조회
+	          +"to_char(joindate,'yyyy-mm-dd') joindate, " // 가입일자를 yyyy-mm-dd의 형식으로 출력
 			  +"case when grade = 'A' then 'VIP' when grade = 'B' then '일반' else '직원' end grade, " // 등급을 case문으로 조회하여 각각 맞는 등급으로 분류
 			  +"city from member_tbl_02 order by custno asc"; // city를 custno(오름차순)순서대로 정렬
 
 	Connection conn = DBConnect.getConnection();
 	PreparedStatement pstmt = conn.prepareStatement(sql);
-	ResultSet rs = pstmt.executeQuery(); //rs에는 쿼리문이 들어감.
-%>    
-<!DOCTYPE html>
-<html>
-<head>
-<meta charset="UTF-8">
-<title>member_list</title>
-<link rel="stylesheet" type="text/css" href="css/style.css">
-</head>
-<body>
-<header>
-	  <jsp:include page="layout/header.jsp"></jsp:include>
- </header>
-
- <nav>
-   	 <jsp:include page="layout/nav.jsp"></jsp:include>
- </nav>
-		
- <section class="section">
-   	 <h2>홈쇼핑 회원 명단</h2><br>
-  
+	ResultSet rs = pstmt.executeQuery(); //pstmt가 실행된 결과가 rs에 저장된다.
+```
+pstmt에 sql이 저장되고, 그 저장값을 실행시키고 난 후 결과는 rs에 저장된다.
+```jsp	
 	<table class="table_line">
 				<tr>  //테이블의 속성만 작성
 					<th>회원번호</th>
@@ -353,7 +330,7 @@ custno는 DB에 create할 때 number로 지정했지만, join페이지에서 받
 					while(rs.next()) { //while문에 rs.next()를 넣어서 마지막 번호까지 반복한다. 번호가 없으면 while문은 멈춘다.
 				%>
 				<tr class="center">
-					<td><%= rs.getString("custno")%></td> // 테이블에는 number로 들어가있지만 입력된 값에서 뽑아오므로 string으로 가져옴.
+					<td><%= rs.getString("custno")%></td> // 테이블에는 number로 들어가있지만 조회된 결과에서 항목들을 getString가져온다.
 					<td><%= rs.getString("custname") %></td>
 					<td><%= rs.getString("phone") %></td>
 					<td><%= rs.getString("address") %></td>
@@ -376,4 +353,6 @@ HRDKOREA Copyrightⓒ2015 All rights reserved. Human Resources Development Servi
 </body>
 </html>
 ```
-
+while문에 rs.next()를 넣어서 마지막 번호까지 반복한다. 번호가 없으면 while문은멈춘다.
+DB에 지정해놓은 custno의 형식은 number이지만 조호된 결과에서 항목들을 가져오므로 getString을 사용하였다.
+button은 일단 수정과 삭제 버튼만 만들어놓았다.
