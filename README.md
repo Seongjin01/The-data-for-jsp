@@ -350,7 +350,7 @@ custno는 DB에 create할 때 number로 지정했지만, join페이지에서 받
 					
 				</tr>
 				<%
-					while(rs.next()) { //이후 while문을 돌려서 마지막 값이 나올때까지 반복(마지막 회원번호)
+					while(rs.next()) { //while문에 rs.next()를 넣어서 마지막 번호까지 반복한다. 번호가 없으면 while문은 멈춘다.
 				%>
 				<tr class="center">
 					<td><%= rs.getString("custno")%></td> // 테이블에는 number로 들어가있지만 입력된 값에서 뽑아오므로 string으로 가져옴.
